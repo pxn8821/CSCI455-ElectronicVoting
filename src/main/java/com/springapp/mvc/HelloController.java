@@ -7,8 +7,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class HelloController {
+
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
+		model.addAttribute("message", "Hello world!!");
+		return "hello";
+	}
+
+
+	@RequestMapping(value="/test", method = RequestMethod.GET)
+	public String printTest(ModelMap model) {
 		model.addAttribute("message", "Hello world!!");
 		return "hello";
 	}
