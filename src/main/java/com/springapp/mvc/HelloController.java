@@ -20,4 +20,14 @@ public class HelloController {
 		model.addAttribute("message", "Hello world!!");
 		return "hello";
 	}
+
+    @RequestMapping(value="/login", method = RequestMethod.GET)
+    public String printLogin(ModelMap model){
+        return "login";
+    }
+
+    @RequestMapping(value="/signup", method = RequestMethod.GET)
+    public String printSignUp(ModelMap model){
+        return "signup";
+    }
 }
