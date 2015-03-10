@@ -69,7 +69,7 @@
                 <div class="row text-center mar-bot40">
                     <div class="col-md-4">
                         <div class="team-member">
-                            <figure class="member-photo"><img src="resources/images/member1.jpg" alt=""></figure>
+                            <figure class="member-photo"><img src="resources/images/member2.jpg" alt=""></figure>
                             <div class="team-detail">
                                 <h4>Mustafa Al-Salihi</h4>
                                 <span>Software Engineer</span>
@@ -78,7 +78,7 @@
                     </div>
                     <div class="col-md-4">
                         <div class="team-member">
-                            <figure class="member-photo"><img src="resources/images/member2.jpg" alt=""></figure>
+                            <figure class="member-photo"><img src="resources/images/member1.jpg" alt=""></figure>
                             <div class="team-detail">
                                 <h4>Awelemdy Orakwue</h4>
                                 <span>Computer Scientist</span>
