@@ -15,11 +15,6 @@ public class HelloController {
 	}
 
 
-	@RequestMapping(value="/test", method = RequestMethod.GET)
-	public String printTest(ModelMap model) {
-		model.addAttribute("message", "Hello world!!");
-		return "hello";
-	}
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String printLogin(ModelMap model){
