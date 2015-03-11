@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/security
+                           http://www.springframework.org/schema/security/spring-security-3.2.xsd">
+
+    <security:global-method-security pre-post-annotations="enabled"/>
+
+    <security:http auto-config="true" >
+        <security:intercept-url pattern="/user/**" access="ROLE_USER" />
+
+        <security:form-login login-page="/login" default-target-url="/user/testauth"
+                             authentication-failure-url="/login" />
+        <security:logout logout-success-url="/logout" />
+    </security:http>
+
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="user" password="123456" authorities="ROLE_USER" />
+                <security:user name="admin" password="123456" authorities="ROLE_ADMIN" />
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+
+    <bean id="dataSource2" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="${database.driver}" />
+        <property name="url" value="${database.url}" />
+        <property name="username" value="${database.user}" />
+        <property name="password" value="${database.password}" />
+    </bean>
+
+</beans>

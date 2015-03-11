@@ -15,6 +15,10 @@ public class HelloController {
 	}
 
 
+    @RequestMapping(value="/user/testauth", method = RequestMethod.GET)
+    public String printTestAuth(ModelMap model) {
+        return "authed";
+    }
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String printLogin(ModelMap model){
