@@ -48,6 +48,10 @@
             <c:if test="${message eq 'failedlogin'}">
                 <span style="color: red">Incorrect Username or Password!</span>
             </c:if>
+            <c:if test="${message eq 'registrationsuccess'}">
+                <span style="color: green">Registration success, please login.</span>
+            </c:if>
+
             <input type="text" class="form-control" name="j_username" placeholder="Username" required="" autofocus="" />
             <input type="password" class="form-control" name="j_password" placeholder="Password" required=""/>
 
