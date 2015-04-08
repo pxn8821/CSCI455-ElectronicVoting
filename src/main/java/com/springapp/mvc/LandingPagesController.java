@@ -1,8 +1,12 @@
 package com.springapp.mvc;
 
+import java.sql.PreparedStatement;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -28,11 +34,6 @@ public class LandingPagesController {
 	}
 
 
-    @RequestMapping(value="/user/testauth", method = RequestMethod.GET)
-    public String printTestAuth(ModelMap model) {
-        return "authed";
-    }
-
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String printLogin(ModelMap model){
         return "login";
@@ -44,6 +45,11 @@ public class LandingPagesController {
         return "redirect:login";
     }
 
+    @RequestMapping(value="/logout", method = RequestMethod.GET)
+    public String logoutAction(final RedirectAttributes redirectAttributes){
+        return "redirect:/";
+    }
+
     @RequestMapping(value="/signup", method = RequestMethod.GET)
     public String printSignUp(ModelMap model){
         return "signup";
@@ -52,9 +58,9 @@ public class LandingPagesController {
 
     @RequestMapping(value="/signup-go", method = RequestMethod.POST)
     public String submitSignup(final RedirectAttributes redirectAttributes,
-                               @RequestParam("username") String username,
-                               @RequestParam("password1") String password1,
-                               @RequestParam("password2") String password2){
+                               @RequestParam("username") final String username,
+                               @RequestParam("password1") final String password1,
+                               @RequestParam("password2") final String password2){
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
@@ -84,12 +90,28 @@ public class LandingPagesController {
         }
 
         // Insert the user
-        String sql = "INSERT into users (username, password, active) VALUES (?, ?, 1)";
+        final String sql = "INSERT into users (username, password, active) VALUES (?, ?, 1)";
 
-        jdbcTemplate.update(sql,
-                username,
-                password1);
 
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(
+                new PreparedStatementCreator() {
+                    public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                        PreparedStatement pst =
+                                con.prepareStatement(sql, new String[] {"user_id"});
+                        pst.setString(1, username);
+                        pst.setString(2, password1);
+                        return pst;
+                    }
+                },
+                keyHolder);
+
+        int newUserID = keyHolder.getKey().intValue();
+        String roleSQL = "INSERT INTO user_roles (authority, user_id) VALUES ('ROLE_USER', ?)";
+
+        // Insert the user role
+        jdbcTemplate.update(roleSQL,
+                newUserID);
 
         redirectAttributes.addFlashAttribute("message", "registrationsuccess");
         return "redirect:login";

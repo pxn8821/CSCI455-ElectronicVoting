@@ -13,7 +13,7 @@
     <security:http auto-config="true" >
         <security:intercept-url pattern="/user/**" access="ROLE_USER" />
 
-        <security:form-login login-page="/login" default-target-url="/user/testauth"
+        <security:form-login login-page="/login" default-target-url="/user/dashboard"
                              authentication-failure-url="/login-failed" />
         <security:logout logout-success-url="/logout" />
     </security:http>
