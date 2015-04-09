@@ -1,8 +1,8 @@
-<%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
-<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <%@ taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+  <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,10 +17,10 @@
   <!-- Angular JS -->
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular-route.min.js"></script>
-  <script src="resources/scripts/app.js"></script>
+  <script src="/resources/scripts/app.js"></script>
 
-  <link rel="stylesheet" href="resources/loginPage.css">
-  <link rel="stylesheet" href="resources/test.css">
+  <link rel="stylesheet" href="/resources/loginPage.css">
+  <link rel="stylesheet" href="/resources/test.css">
 
 </head>
 <body>
@@ -42,8 +42,13 @@
           <li><a href="/login">Sign in</a></li>
         </sec:authorize>
         <sec:authorize ifNotGranted="ROLE_ANONYMOUS">
-          <li><a href="/signup">Dashboard</a></li>
-          <li><a href="/j_spring_security_logout">Log out</a></li>
+
+          <sec:authorize ifAnyGranted="ROLE_ADMIN">
+            <li><a href="/admin">Admin</a></li>
+          </sec:authorize>
+
+          <li><a href="/user/dashboard">Dashboard</a></li>
+          <li><a href="/j_spring_security_logout">Log out (<sec:authentication property="principal.username" />)</a></li>
         </sec:authorize>
 
 
@@ -51,6 +56,8 @@
     </div>
   </div>
 </div>
-  <tiles:insertAttribute name="body" />
+
+
+<tiles:insertAttribute name="body" />
 
 </body>

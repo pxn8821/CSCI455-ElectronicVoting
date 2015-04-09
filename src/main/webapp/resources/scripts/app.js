@@ -12,3 +12,24 @@ function formValidate(form) {
     }
     return true;
 }
+
+
+function validateAddElection(form){
+    var e = form.elements;
+
+    typesToCheck = ['electionName', 'electionChoice1', 'electionChoice2'];
+
+    passed = true;
+    for(i = 0; i < typesToCheck.length; i++){
+        typeToCheck = typesToCheck[i];
+        if(e[typeToCheck].value.trim() == ''){
+            $(e[typeToCheck]).parents("div.form-group").addClass('has-error');
+            passed = false;
+        } else {
+            $(e[typeToCheck]).parents("div.form-group").removeClass('has-error');
+        }
+    }
+
+
+    return passed;
+}

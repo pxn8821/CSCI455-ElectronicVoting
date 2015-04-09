@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,6 +90,8 @@ public class LandingPagesController {
             return "redirect:signup";
         }
 
+        final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
         // Insert the user
         final String sql = "INSERT into users (username, password, active) VALUES (?, ?, 1)";
 
@@ -100,7 +103,7 @@ public class LandingPagesController {
                         PreparedStatement pst =
                                 con.prepareStatement(sql, new String[] {"user_id"});
                         pst.setString(1, username);
-                        pst.setString(2, password1);
+                        pst.setString(2, encoder.encode(password1));
                         return pst;
                     }
                 },

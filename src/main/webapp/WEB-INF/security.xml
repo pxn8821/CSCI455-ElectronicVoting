@@ -11,7 +11,8 @@
     <security:global-method-security pre-post-annotations="enabled"/>
 
     <security:http auto-config="true" >
-        <security:intercept-url pattern="/user/**" access="ROLE_USER" />
+        <security:intercept-url pattern="/user/**" access="ROLE_USER, ROLE_ADMIN" />
+        <security:intercept-url pattern="/admin/**" access="ROLE_ADMIN" />
 
         <security:form-login login-page="/login" default-target-url="/user/dashboard"
                              authentication-failure-url="/login-failed" />
@@ -20,6 +21,7 @@
 
     <security:authentication-manager>
         <security:authentication-provider>
+            <security:password-encoder hash="bcrypt"/>
             <security:jdbc-user-service data-source-ref="dataSource2"
                                         users-by-username-query="select username, password, active from users where username=?"
                                         authorities-by-username-query="select us.username, ur.authority from users us, user_roles ur

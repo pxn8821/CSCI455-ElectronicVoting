@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <div class="wrapper">
-    <form class="form-signin" action="/signup-go" method="post" onsubmit="return formValidate(this);">
+    <form class="form-signin form-login" action="/signup-go" method="post" onsubmit="return formValidate(this);">
         <h2 class="form-signin-heading">Sign up</h2>
         <c:if test="${message eq 'passwordsnotequal'}">
             <span style="color: red">Passwords do not match</span>

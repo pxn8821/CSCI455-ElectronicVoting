@@ -92,3 +92,9 @@ p.copyright {
     color: #fff;
     text-align: center;
 }
+
+#bodycontent{
+    margin-top: 60px;
+    margin-left: 60px;
+    margin-right: 60px;
+}

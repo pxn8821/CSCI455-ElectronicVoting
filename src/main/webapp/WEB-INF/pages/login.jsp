@@ -3,7 +3,7 @@
 
     <div class="wrapper">
 
-        <form class="form-signin" name='f' action="<c:url value='j_spring_security_check' />" method='POST'>
+        <form class="form-signin form-login" name='f' action="<c:url value='j_spring_security_check' />" method='POST'>
             <h2 class="form-signin-heading">Please login</h2>
             <c:if test="${message eq 'failedlogin'}">
                 <span style="color: red">Incorrect Username or Password!</span>
