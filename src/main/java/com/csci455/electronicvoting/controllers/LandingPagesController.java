@@ -1,6 +1,8 @@
-package com.springapp.mvc;
+package com.csci455.electronicvoting.controllers;
 
 import java.sql.PreparedStatement;
+
+import com.csci455.electronicvoting.components.Voting;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -31,7 +33,7 @@ public class LandingPagesController {
 
 	@RequestMapping(value="/", method = RequestMethod.GET)
 	public String printWelcome(ModelMap model) {
-		return "hello";
+        return "hello";
 	}
 
 
