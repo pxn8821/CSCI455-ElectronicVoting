@@ -50,7 +50,7 @@ public class AdminController {
         sql = "DELECT FROM elections_votes WHERE election_id = ?";
         jdbcTemplate.update(sql,
                 id);
-        
+
         return "admin-dashboard";
     }
 
