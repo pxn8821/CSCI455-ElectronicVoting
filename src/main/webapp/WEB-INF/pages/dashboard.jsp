@@ -1,6 +1,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div id="bodycontent">
   <h2>Dashboard</h2>
+  <c:if test="${message eq 'error'}">
+    <div class="alert alert-danger" role="alert">An error has occurred! Your vote has NOT been cast. Please try again!</div>
+  </c:if>
+  <c:if test="${message eq 'success'}">
+    <div class="alert alert-success" role="alert">Your vote has been cast!</div>
+  </c:if>
 
   <div class="panel panel-default">
     <div class="panel-heading"><h3 class="panel-title">Elections To Vote</h3></div>
@@ -20,8 +26,8 @@
           <tr>
             <td><c:out value="${election['election_id']}"/></td>
             <td><c:out value="${election['election_name']}"/></td>
-            <td><a href="#"><c:out value="${election['election_choice1']}"/></a></td>
-            <td><a href="#"><c:out value="${election['election_choice2']}"/></a></td>
+            <td><a href="/user/castvote/<c:out value="${election['election_id']}"/>/1"><c:out value="${election['election_choice1']}"/></a></td>
+            <td><a href="/user/castvote/<c:out value="${election['election_id']}"/>/2"><c:out value="${election['election_choice2']}"/></a></td>
             <td><c:out value="${election['election_totalvotes']}"/></td>
 
           </tr>

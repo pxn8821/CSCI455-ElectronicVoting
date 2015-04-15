@@ -2,14 +2,19 @@ package com.csci455.electronicvoting.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.sql.DataSource;
+import java.util.Date;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +34,91 @@ public class UserPagesController {
         model.addAttribute("votedElections", getElectionVoted());
         model.addAttribute("novoteElections", getElectionsNotVoted());
         return "dashboard";
+    }
+
+    @RequestMapping(value="/user/castvote/{electionid}/{choice}", method = RequestMethod.GET)
+    public String submitVote( final RedirectAttributes redirectAttributes,
+                              @PathVariable int electionid,
+                              @PathVariable int choice){
+        if(choice != 1 && choice !=2){
+            redirectAttributes.addFlashAttribute("message", "error");
+            return "redirect:/user/dashboard";
+        }
+        if(hasUserVoted(electionid)){
+            redirectAttributes.addFlashAttribute("message", "error");
+            return "redirect:/user/dashboard";
+        }
+
+        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+        // Get the election
+        List<Map<String, Object>> electionResults = jdbcTemplate.queryForList("SELECT * FROM elections WHERE election_id = ?", electionid);
+        if(electionResults.size() != 1){
+            redirectAttributes.addFlashAttribute("message", "error");
+            return "redirect:/user/dashboard";
+        }
+        Map<String, Object> election = electionResults.get(0);
+
+        // Insert vote
+        jdbcTemplate.update("INSERT INTO elections_votes (user_id, election_id, date) VALUES (?, ?, ?)",
+                getUserId(),
+                election.get("election_id"),
+                new Date());
+
+        int votes1 = 0;
+        int votes2 = 0;
+        int totalVotes = 0;
+        try {
+            totalVotes = Integer.parseInt(election.get("election_totalvotes").toString());
+            votes1 = Integer.parseInt(election.get("election_votes1").toString());
+            votes2 = Integer.parseInt(election.get("election_votes2").toString());
+
+            // Update election
+            if (choice == 1) {
+                jdbcTemplate.update("UPDATE elections SET election_totalvotes = ?, election_votes1 = ? WHERE election_id = ?",
+                        totalVotes + 1, votes1 + 1, election.get("election_id"));
+
+            } else if (choice == 2) {
+                jdbcTemplate.update("UPDATE elections SET election_totalvotes = ?, election_votes2 = ? WHERE election_id = ?",
+                        totalVotes + 1, votes2 + 1, election.get("election_id"));
+            }
+        } catch(NumberFormatException e){
+            redirectAttributes.addFlashAttribute("message", "error");
+        }
+
+        // ** All the stuff below is verification that the vote has been logged **//
+
+        // Check that the user has voted
+        if(!hasUserVoted(electionid)){
+            redirectAttributes.addFlashAttribute("message", "error");
+            return "redirect:/user/dashboard";
+        }
+
+        // Check that the vote count increased
+        election = jdbcTemplate.queryForList("SELECT * FROM elections WHERE election_id = ?", electionid).get(0);
+        int newtotalVotes = Integer.parseInt(election.get("election_totalvotes").toString());
+        int newvotes1 = Integer.parseInt(election.get("election_votes1").toString());
+        int newvotes2 = Integer.parseInt(election.get("election_votes2").toString());
+
+        if(choice == 1){
+            if( (votes1 + 1) != newvotes1){
+                redirectAttributes.addFlashAttribute("message", "error");
+                return "redirect:/user/dashboard";
+            }
+        } else if(choice == 2){
+            if( (votes2 + 1) != newvotes2){
+                redirectAttributes.addFlashAttribute("message", "error");
+                return "redirect:/user/dashboard";
+            }
+        }
+
+        if( (totalVotes + 1) != newtotalVotes){
+            redirectAttributes.addFlashAttribute("message", "error");
+            return "redirect:/user/dashboard";
+        }
+
+        redirectAttributes.addFlashAttribute("message", "success");
+        return "redirect:/user/dashboard";
+
     }
 
 
@@ -54,7 +144,6 @@ public class UserPagesController {
 
         List<Map<String, Object>> results = jdbcTemplate.queryForList(sql, electionID, getUserId());
 
-        System.out.println(results.size());
         if(results.size() == 0){
             return false;
         } else {
