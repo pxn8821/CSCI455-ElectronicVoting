@@ -6,7 +6,7 @@
                     <div class="col-xs-12">
                         <h1>Secure Electronic Voting</h1>
                         <h2 class="subtitle">No blind voting, no cheating and no privacy issues</h2>
-                        <button type="submit" class="btn btn-theme">
+                        <button onclick="location.href='/signup'" type="submit" class="btn btn-theme">
                             <a class="btn-alink" href="/signup">Sign up</a>
                         </button>
                     </div>
