@@ -29,3 +29,14 @@ Twitter bootstrap is a front end framework that we will use in our application. 
 ###AngularJS
 This is a front end javascript framework that will be used for the presentation of our web application. Since this is a front end framework, anyone will be able to see the code. There should not be any kind of code that exposes critical security aspects of our application. For example, things like a password salt should not be implemented in AngularJS since all of the code that we write for it will be public.
 
+
+## Compiling/Installation
+
+This project uses maven as a dependency manager. 
+
+You will need to edit the database.properties file with your database settings before building the project. The file is located in src/resources/database.properties.
+
+To build the project, simply run `mvn clean install` to build the necessary war file
+
+Once it completes, move it to your Tomcat's deployment directory and rename the war to ROOT.war
+
