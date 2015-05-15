@@ -2,13 +2,14 @@ package com.csci455.electronicvoting.controllers;
 
 import java.sql.PreparedStatement;
 
-import com.csci455.electronicvoting.components.Voting;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -39,6 +40,15 @@ public class LandingPagesController {
 
     @RequestMapping(value="/login", method = RequestMethod.GET)
     public String printLogin(ModelMap model){
+        // Check if the user is registered or not
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName(); //get logged in username
+
+        System.out.println(name);
+        if(!name.equals("anonymousUser")){
+            return "redirect:/user/dashboard";
+        }
+
         return "login";
     }
 
@@ -55,6 +65,14 @@ public class LandingPagesController {
 
     @RequestMapping(value="/signup", method = RequestMethod.GET)
     public String printSignUp(ModelMap model){
+        // Check if the user is registered or not
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName(); //get logged in username
+
+        if(!name.equals("anonymousUser")){
+            return "redirect:/user/dashboard";
+        }
+
         return "signup";
     }
 
@@ -64,6 +82,14 @@ public class LandingPagesController {
                                @RequestParam("username") final String username,
                                @RequestParam("password1") final String password1,
                                @RequestParam("password2") final String password2){
+
+        // Check if the user is registered or not
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String name = auth.getName(); //get logged in username
+
+        if(!name.equals("anonymousUser")){
+            return "redirect:/user/dashboard";
+        }
 
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
 
